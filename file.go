@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"debug/pe"
 	"encoding/binary"
+	"github.com/mtlicz/container"
 	"io"
 )
 
 type PeFile struct {
 	File                            *pe.File
 	mySections                      []customSection
-	va                              *scope.Scope
+	va                              *container.Scope
 	sectionAlignment, fileAlignment uint32
 }
 
@@ -350,7 +351,7 @@ func (p *PeFile) ResetFileAlignment(align uint32) {
 
 func (p *PeFile) load() {
 	if p.File.OptionalHeader != nil {
-		p.va = scope.New()
+		p.va = container.NewScope()
 		for _, s := range p.File.Sections {
 			p.va.Insert(uint64(s.VirtualAddress), uint64(s.VirtualSize))
 		}
