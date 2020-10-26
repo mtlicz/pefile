@@ -15,6 +15,111 @@ type PeFile struct {
 	sectionAlignment, fileAlignment uint32
 }
 
+type OptionalHeader struct {
+	MajorLinkerVersion          uint8
+	MinorLinkerVersion          uint8
+	SizeOfCode                  uint32
+	SizeOfInitializedData       uint32
+	SizeOfUninitializedData     uint32
+	AddressOfEntryPoint         uint32
+	BaseOfCode                  uint32
+	ImageBase                   uint64
+	SectionAlignment            uint32
+	FileAlignment               uint32
+	MajorOperatingSystemVersion uint16
+	MinorOperatingSystemVersion uint16
+	MajorImageVersion           uint16
+	MinorImageVersion           uint16
+	MajorSubsystemVersion       uint16
+	MinorSubsystemVersion       uint16
+	Win32VersionValue           uint32
+	SizeOfImage                 uint32
+	SizeOfHeaders               uint32
+	CheckSum                    uint32
+	Subsystem                   uint16
+	DllCharacteristics          uint16
+	SizeOfStackReserve          uint64
+	SizeOfStackCommit           uint64
+	SizeOfHeapReserve           uint64
+	SizeOfHeapCommit            uint64
+	LoaderFlags                 uint32
+	NumberOfRvaAndSizes         uint32
+	DataDirectory               []pe.DataDirectory
+}
+
+func (p *PeFile) OptionHeader() *OptionalHeader {
+	var ret OptionalHeader
+
+	if p.File.OptionalHeader != nil {
+		switch p.File.OptionalHeader.(type) {
+		case *pe.OptionalHeader32:
+			h := p.File.OptionalHeader.(*pe.OptionalHeader32)
+			ret.MajorLinkerVersion = h.MajorLinkerVersion
+			ret.MinorLinkerVersion = h.MinorLinkerVersion
+			ret.SizeOfCode = h.SizeOfCode
+			ret.SizeOfInitializedData = h.SizeOfInitializedData
+			ret.SizeOfUninitializedData = h.SizeOfUninitializedData
+			ret.AddressOfEntryPoint = h.AddressOfEntryPoint
+			ret.BaseOfCode = h.BaseOfCode
+			ret.ImageBase = uint64(h.ImageBase)
+			ret.SectionAlignment = h.SectionAlignment
+			ret.FileAlignment = h.FileAlignment
+			ret.MajorOperatingSystemVersion = h.MajorOperatingSystemVersion
+			ret.MinorOperatingSystemVersion = h.MinorOperatingSystemVersion
+			ret.MajorImageVersion = h.MajorImageVersion
+			ret.MinorImageVersion = h.MinorImageVersion
+			ret.MajorSubsystemVersion = h.MajorSubsystemVersion
+			ret.MinorSubsystemVersion = h.MinorSubsystemVersion
+			ret.Win32VersionValue = h.Win32VersionValue
+			ret.SizeOfImage = h.SizeOfImage
+			ret.SizeOfHeaders = h.SizeOfHeaders
+			ret.CheckSum = h.CheckSum
+			ret.Subsystem = h.Subsystem
+			ret.DllCharacteristics = h.DllCharacteristics
+			ret.SizeOfStackReserve = uint64(h.SizeOfStackReserve)
+			ret.SizeOfStackCommit = uint64(h.SizeOfStackCommit)
+			ret.SizeOfHeapReserve = uint64(h.SizeOfHeapReserve)
+			ret.SizeOfHeapCommit = uint64(h.SizeOfHeapCommit)
+			ret.LoaderFlags = h.LoaderFlags
+			ret.NumberOfRvaAndSizes = h.NumberOfRvaAndSizes
+			ret.DataDirectory = h.DataDirectory[:]
+		case *pe.OptionalHeader64:
+			h := p.File.OptionalHeader.(*pe.OptionalHeader64)
+			ret.MajorLinkerVersion = h.MajorLinkerVersion
+			ret.MinorLinkerVersion = h.MinorLinkerVersion
+			ret.SizeOfCode = h.SizeOfCode
+			ret.SizeOfInitializedData = h.SizeOfInitializedData
+			ret.SizeOfUninitializedData = h.SizeOfUninitializedData
+			ret.AddressOfEntryPoint = h.AddressOfEntryPoint
+			ret.BaseOfCode = h.BaseOfCode
+			ret.ImageBase = h.ImageBase
+			ret.SectionAlignment = h.SectionAlignment
+			ret.FileAlignment = h.FileAlignment
+			ret.MajorOperatingSystemVersion = h.MajorOperatingSystemVersion
+			ret.MinorOperatingSystemVersion = h.MinorOperatingSystemVersion
+			ret.MajorImageVersion = h.MajorImageVersion
+			ret.MinorImageVersion = h.MinorImageVersion
+			ret.MajorSubsystemVersion = h.MajorSubsystemVersion
+			ret.MinorSubsystemVersion = h.MinorSubsystemVersion
+			ret.Win32VersionValue = h.Win32VersionValue
+			ret.SizeOfImage = h.SizeOfImage
+			ret.SizeOfHeaders = h.SizeOfHeaders
+			ret.CheckSum = h.CheckSum
+			ret.Subsystem = h.Subsystem
+			ret.DllCharacteristics = h.DllCharacteristics
+			ret.SizeOfStackReserve = h.SizeOfStackReserve
+			ret.SizeOfStackCommit = h.SizeOfStackCommit
+			ret.SizeOfHeapReserve = h.SizeOfHeapReserve
+			ret.SizeOfHeapCommit = h.SizeOfHeapCommit
+			ret.LoaderFlags = h.LoaderFlags
+			ret.NumberOfRvaAndSizes = h.NumberOfRvaAndSizes
+			ret.DataDirectory = h.DataDirectory[:]
+		}
+	}
+
+	return &ret
+}
+
 func (p *PeFile) isOptionHeader64() bool {
 	f := p.File
 	if f.OptionalHeader != nil {
