@@ -120,10 +120,12 @@ func (p *PeFile) OptionHeader() *OptionalHeader {
 	return &ret
 }
 
-func (p *PeFile) isOptionHeader64() bool {
+func (p *PeFile) IsOptionHeader64() bool {
 	f := p.File
 	if f.OptionalHeader != nil {
-		return f.Machine == pe.IMAGE_FILE_MACHINE_AMD64
+		return f.Machine == pe.IMAGE_FILE_MACHINE_AMD64 ||
+			f.Machine == pe.IMAGE_FILE_MACHINE_ARM64 ||
+			f.Machine == pe.IMAGE_FILE_MACHINE_IA64
 	}
 
 	return false
@@ -461,7 +463,7 @@ func (p *PeFile) load() {
 			p.va.Insert(uint64(s.VirtualAddress), uint64(s.VirtualSize))
 		}
 
-		if p.isOptionHeader64() {
+		if p.IsOptionHeader64() {
 			h := p.File.OptionalHeader.(*pe.OptionalHeader64)
 			p.fileAlignment = h.FileAlignment
 			p.sectionAlignment = h.SectionAlignment
